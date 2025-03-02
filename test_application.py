@@ -10,7 +10,7 @@ class FlaskAppTest(unittest.TestCase):
     def test_home_page(self):
         response = self.app.get('/')
         date = response.data.decode('utf-8')
-        self.assertIn('Hello, BigData z Pythonem!', date)
+        self.assertIn('Witaj, BigData z Pythonem!', date)
 
     def test_status_hello_page(self):
         response = self.app.get('/')
