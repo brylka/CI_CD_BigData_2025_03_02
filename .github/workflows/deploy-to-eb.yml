@@ -33,5 +33,5 @@ jobs:
 
       - name: Deploy to AWS EB
         run: |
-          eb init cicd -p python-3.13 --region eu-central-1
-          eb deploy cicd
+          eb init Cicd-env -p python-3.13 --region eu-central-1
+          eb deploy Cicd-env
