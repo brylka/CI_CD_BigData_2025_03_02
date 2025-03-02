@@ -54,7 +54,8 @@ BASE_HTML = '''
         {% else %}
         {{ task[1] }}
         {% endif %}
-        <a href="/complete/{{ task[0] }}">[Zakończ]</a>
+        <a href="/complete/{{ task[0] }}">[Zakończ]</a> 
+        <a href="/delete/{{ task[0] }}">[Usuń]</a>
     {% endfor %}
 </html>
 '''
@@ -91,6 +92,14 @@ def complete(task_id):
     conn.close()
     return redirect(url_for('index'))
 
+@application.route('/delete/<int:task_id>')
+def delete(task_id):
+    conn = sqlite3.connect('tasks.sqlite')
+    c = conn.cursor()
+    c.execute("DELETE FROM tasks WHERE id = ?", (task_id,))
+    conn.commit()
+    conn.close()
+    return redirect(url_for('index'))
 
 
 if __name__ == '__main__':
