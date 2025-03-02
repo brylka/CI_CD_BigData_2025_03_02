@@ -45,7 +45,11 @@ BASE_HTML = '''
         <input type="text" name="title" placeholder="Tytuł zadania" required>
         <button type="submit">Dodaj</button>
     </form>
-    
+    <h2>Zadania</h2>
+    <ul>
+    {% for task in tasks %}
+        <li>{{ task[1] }}
+    {% endfor %}
 </html>
 '''
 
@@ -55,7 +59,12 @@ BASE_HTML = '''
 
 @application.route('/')
 def index():
-    return render_template_string(BASE_HTML, ENV=ENV)
+    conn = sqlite3.connect('tasks.sqlite')
+    c = conn.cursor()
+    c.execute("SELECT id, title, completed FROM tasks")
+    tasks = c.fetchall()
+    conn.close()
+    return render_template_string(BASE_HTML, tasks=tasks, ENV=ENV)
 
 @application.route('/add', methods=['POST'])
 def add():
