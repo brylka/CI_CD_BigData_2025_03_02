@@ -4,7 +4,7 @@ import os
 
 application = Flask(__name__)
 
-#ENV = os.environ.get('FLASK_ENV', 'dev')
+ENV = os.environ.get('FLASK_ENV', 'dev')
 
 @application.route('/')
 def hello_world():
