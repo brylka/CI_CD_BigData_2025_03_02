@@ -1,6 +1,6 @@
 import sqlite3
 
-from flask import Flask
+from flask import Flask, request, render_template_string, redirect, url_for
 import os
 
 
@@ -31,13 +31,42 @@ def init_db():
 
 init_db()
 
+BASE_HTML = '''
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CRUD w BigData z Pythonem!</title>
+</head>
+    <h1>Witaj, BigData z Pythonem!</h1>
+    <p>Przykład CI/CD - automatyczne wdrożenie!</p>
+    <p>Środowisko: <b>{{ ENV }}</b></p>
+    <h2>Dodaj zadanie</h2>
+    <form action="/add" method="post">
+        <input type="text" name="title" placeholder="Tytuł zadania" required>
+        <button type="submit">Dodaj</button>
+    </form>
+    
+</html>
+'''
+
+
 
 
 
 @application.route('/')
-def hello_world():
-    return ('<h1>Witaj, BigData z Pythonem!</h1><p>Przykład CI/CD - automatyczne wdrożenie!</p><p>Bartosz Bryniarski</p>'
-            f'<p>Środowisko: <b>{ENV}</b></p>')
+def index():
+    return render_template_string(BASE_HTML, ENV=ENV)
+
+@application.route('/add', methods=['POST'])
+def add():
+    title = request.form.get('title')
+    conn = sqlite3.connect('tasks.sqlite')
+    c = conn.cursor()
+    c.execute("INSERT INTO tasks (title) VALUES (?)", (title,))
+    conn.commit()
+    conn.close()
+    return redirect(url_for('index'))
+
 
 
 if __name__ == '__main__':
