@@ -48,7 +48,13 @@ BASE_HTML = '''
     <h2>Zadania</h2>
     <ul>
     {% for task in tasks %}
-        <li>{{ task[1] }}
+        <li>
+        {% if task[2] == 1 %}
+        <s>{{ task[1] }}</s>
+        {% else %}
+        {{ task[1] }}
+        {% endif %}
+        <a href="/complete/{{ task[0] }}">[Zakończ]</a>
     {% endfor %}
 </html>
 '''
@@ -72,6 +78,15 @@ def add():
     conn = sqlite3.connect('tasks.sqlite')
     c = conn.cursor()
     c.execute("INSERT INTO tasks (title) VALUES (?)", (title,))
+    conn.commit()
+    conn.close()
+    return redirect(url_for('index'))
+
+@application.route('/complete/<int:task_id>')
+def complete(task_id):
+    conn = sqlite3.connect('tasks.sqlite')
+    c = conn.cursor()
+    c.execute("UPDATE tasks SET completed = 1 WHERE id = ?", (task_id,))
     conn.commit()
     conn.close()
     return redirect(url_for('index'))
